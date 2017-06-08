@@ -1,7 +1,7 @@
 version: "2"
 services:
   op:
-    image: yourBlueMixNameSpace/liberty-op
+    image: yourbluemixnamespace/liberty-op
     ports:
      - "9445:9443"
     networks:
@@ -9,7 +9,7 @@ services:
     environment:
      - REDIRECT_URL=https://192.168.99.100:9443/oidcclient/redirect/RP 
   jeerp:
-    image: yourBlueMixNameSpace/liberty-jee-rp
+    image: yourbluemixnamespace/liberty-jee-rp
     ports:
      - "9080:9080"
      - "9443:9443"
@@ -24,7 +24,7 @@ services:
      - RS_JEE_ENDPOINT_URL=https://jeers:9443/signed-jwt-rs-application/Test
      - RS_SPRING_ENDPOINT_URL=https://springrs:9443/signed-jwt-rs-application/Test
   springrp:
-    image: yourBlueMixNameSpace/liberty-spring-rp
+    image: yourbluemixnamespace/liberty-spring-rp
     ports:
      - "9081:9080"
      - "9444:9443"
@@ -39,11 +39,11 @@ services:
      - RS_JEE_ENDPOINT_URL=https://jeers:9443/signed-jwt-rs-application/Test
      - RS_SPRING_ENDPOINT_URL=https://springrs:9443/signed-jwt-rs-application/Test
   jeers:
-    image: yourBlueMixNameSpace/liberty-jee-rs
+    image: yourbluemixnamespace/liberty-jee-rs
     networks:
      - jwtsample
   springrs:
-    image: yourBlueMixNameSpace/liberty-spring-rs
+    image: yourbluemixnamespace/liberty-spring-rs
     networks:
      - jwtsample
 networks:

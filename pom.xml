@@ -20,7 +20,7 @@
 	</modules>
 
 	<properties>
-		<bluemix.namespace>yourBlueMixNameSpace</bluemix.namespace>
+		<bluemix.namespace>yourbluemixnamespace</bluemix.namespace>
 		<bluemix.registry>registry.ng.bluemix.net</bluemix.registry>
 		<keystores.build.directory>${jwtsample.basedir}${file.separator}target</keystores.build.directory>
 	</properties>

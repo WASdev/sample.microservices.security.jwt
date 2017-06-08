@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="signed jwt rp server">
+	<featureManager>
+		<feature>ssl-1.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>jwt-1.0</feature>
+		<feature>appSecurity-2.0</feature>
+		<feature>openidConnectClient-1.0</feature>
+	</featureManager>
+
+	<httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9080"
+		httpsPort="9443" />
+
+	<keyStore id="defaultKeyStore" password="app-pass"
+		location="${server.config.dir}/key.jks" />
+	<keyStore id="defaultTrustStore" password="trust-pass"
+		location="${server.config.dir}/truststore.jks" />
+		
+	<!-- Configure the default keystore to trust the OP -->
+	<ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore"
+		trustStoreRef="defaultTrustStore" serverKeyAlias="jwtsampleapp" />
+
+	<jwtBuilder id="rsBuilder" 
+				issuer="https://thesamplerp/"
+	  			keyStoreRef="defaultKeyStore"
+	  			keyAlias="jwtsampleapp"
+	/>
+	
+	<jwtConsumer id="oidcConsumer"
+				 signatureAlgorithm="RS256"
+				 issuer="https://thesampleop/"
+				 trustStoreRef="defaultTrustStore"
+				 trustedAlias="jwtsampleapp"
+	/>
+
+	<!-- oidc trust store -->
+	<keyStore id="oidctruststore" password="trust-pass"
+		location="${server.config.dir}/truststore.jks" />
+
+<!-- issuerIdentifier="https://192.168.99.100:9443/oidc/endpoint/OP" -->
+	<openidConnectClient id="RP" 
+		clientId="spring-rp"
+		clientSecret="fish" 
+		signatureAlgorithm="RS256" 
+		trustAliasName="jwtsampleapp"
+		trustStoreRef="oidctruststore" 
+		scope="openid jee-api spring-api spring"
+		authorizationEndpointUrl="${env.AUTH_ENDPOINT_URL}" 
+		tokenEndpointUrl="${env.TOKEN_ENDPOINT_URL}" 
+		issuerIdentifier="https://thesampleop/"
+		/>
+
+	<!-- The app protected by OIDC, the security role enables security for the 
+		app, and by default when is oidc security is configured it applies to all 
+		secured apps -->
+	<application type="war" id="signed-jwt-spring-rp-application"
+		name="signed-jwt-spring-rp-application" location="${server.config.dir}/apps/signed-jwt-spring-rp-application.war">
+		<application-bnd>
+			<security-role name="OIDCUser">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+</server>

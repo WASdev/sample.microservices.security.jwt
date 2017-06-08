@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="signed jwt op server">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>openidConnectServer-1.0</feature>
+        <feature>ssl-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <!--configure the default keystore for ssl.-->
+    <keyStore id="defaultKeyStore" password="app-pass" location="${server.config.dir}/key.jks"/>
+    <keyStore id="defaultTrustStore" password="trust-pass" location="${server.config.dir}/truststore.jks"/>
+    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" serverKeyAlias="jwtsampleapp"/>
+
+    <!--configure the keystore used for oidc -->
+    <keyStore id="oidckeystore" password="app-pass" location="${server.config.dir}/key.jks"/>
+
+    <!-- This is our example user registry.. it has just the one user -->
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="user" password="password" />
+    </basicRegistry>
+
+    <httpEndpoint id="defaultHttpEndpoint"
+    			  host="*"
+                  httpPort="9080"
+                  httpsPort="9443" />
+
+    <!-- This is the OpenID Provider configuration.
+           We're using Asymmetric RS256 signing, so we must supply a
+           keystore and identify which key we should sign with.
+    -->
+    <openidConnectProvider id="OP"
+           oauthProviderRef="Oauth"
+           signatureAlgorithm="RS256"
+           keyStoreRef="oidckeystore"
+           keyAliasName="jwtsampleapp"
+           issuerIdentifier="https://thesampleop/"
+    />
+  
+    <!-- For simplicity, we're using a client db defined here in the
+          server.xml Here we register the clients that will access the
+          provider. For this example, that's just the RP.
+      -->
+    <oauthProvider id="Oauth" jwtAccessToken="true">
+        <localStore>
+            <client name="jee-rp"
+                secret="fish"                
+                displayname="The jee RP application"
+                redirect="${env.JEE_REDIRECT_URL}"
+                scope="openid jee-api spring-api jee"
+                preAuthorizedScope="openid"
+                enabled="true"/>
+            <client name="spring-rp"
+                    secret="fish"
+                    displayname="The spring RP application"
+                    redirect="${env.SPRING_REDIRECT_URL}"
+                    scope="openid jee-api spring-api spring"
+                    preAuthorizedScope="openid"
+                    enabled="true"/>
+        </localStore>
+    </oauthProvider>
+
+    <oauth-roles>
+        <authenticated>
+            <special-subject type="ALL_AUTHENTICATED_USERS" />
+        </authenticated>
+    </oauth-roles>
+
+</server>

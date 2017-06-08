@@ -1,0 +1,370 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.wasdev.wlp.sample</groupId>
+		<artifactId>jwtSample</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+
+	<artifactId>jwtSample-liberty-jee-rp</artifactId>
+	<version>1.0-SNAPSHOT</version>
+
+	<name>jwtSample-jee-rp</name>
+
+	<packaging>war</packaging>
+
+	<url>http://maven.apache.org</url>
+
+	<dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jwtSample-keystores</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>2.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3</version>
+            <scope>provided</scope>
+        </dependency>
+		<dependency>
+			<groupId>javax.json</groupId>
+			<artifactId>javax.json-api</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.websphere.appserver.api</groupId>
+			<artifactId>com.ibm.websphere.appserver.api.basics</artifactId>
+			<version>1.2.9</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.websphere.appserver.api</groupId>
+			<artifactId>com.ibm.websphere.appserver.api.jwt</artifactId>
+			<version>1.0.16</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.websphere.appserver.api</groupId>
+			<artifactId>com.ibm.websphere.appserver.api.oidc</artifactId>
+			<version>1.0.16</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.websphere.appserver.api</groupId>
+			<artifactId>com.ibm.websphere.appserver.api.oauth</artifactId>
+			<version>1.2.16</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<!-- Liberty server properties -->
+		<wlpServerName>LibertyJEERPServer</wlpServerName>
+
+		<!-- Cloud Foundry/Bluemix properties -->
+		<cf.context>mybluemix.net</cf.context>
+		<cf.target>https://api.ng.bluemix.net</cf.target>
+		<cf.space>dev</cf.space>
+
+		<!-- The Cloud Foundry or Bluemix organization, username and password can be
+            entered here. -->
+		<!-- <cf.org></cf.org> -->
+		<!-- <cf.username></cf.username> -->
+		<!-- <cf.password></cf.password> -->
+		<!-- This is the host for your app in Bluemix and what it will be called in the dashboard. -->
+		<cf.host>${cf.org}-jwtsample-liberty-jee-rp</cf.host>
+
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>bluemix</id>
+			<build>
+			<plugins>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>1.4.1</version>
+					<executions>
+						<execution>
+							<id>enforce-bluemix-credentials</id>
+							<phase>initialize</phase>
+							<goals>
+								<goal>enforce</goal>
+							</goals>
+							<configuration>
+								<rules>
+									<requireProperty>
+										<property>cf.org</property>
+										<message>The cf.org property must be
+											provided with the bluemix
+											profile.</message>
+									</requireProperty>
+									<requireProperty>
+										<property>cf.username</property>
+										<message>The cf.username property
+											must be provided with the
+											bluemix profile.</message>
+									</requireProperty>
+									<requireProperty>
+										<property>cf.password</property>
+										<message>The cf.password property
+											must be provided with the
+											bluemix profile.</message>
+									</requireProperty>
+								</rules>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.6</version>
+					<configuration>
+						<failOnMissingWebXml>false</failOnMissingWebXml>
+                        <outputDirectory>${project.build.directory}/defaultServer/apps</outputDirectory>
+                        <warName>signed-jwt-jee-rp-application</warName>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.0.0</version>
+					<configuration>
+						<filesets>
+							<fileset>
+								<directory>${project.build.directory}</directory>
+								<includes>
+									<include>key.jks</include>
+									<include>truststore.jks</include>
+								</includes>
+								<followSymlinks>false</followSymlinks>
+							</fileset>
+						</filesets>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.7</version>
+					<executions>
+						<execution>
+							<id>copy-keystore</id>
+							<phase>generate-resources</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${project.build.directory}/defaultServer</outputDirectory>
+								<overwrite>true</overwrite>
+								<resources>
+									<resource>
+										<directory>${keystores.build.directory}</directory>
+										<includes>
+											<include>key.jks</include>
+											<include>truststore.jks</include>
+										</includes>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+						<execution>
+							<id>copy-server-config</id>
+							<phase>generate-resources</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${project.build.directory}/defaultServer</outputDirectory>
+								<overwrite>true</overwrite>
+								<resources>
+									<resource>
+										<directory>${project.build.resources[0].directory}</directory>
+										<includes>
+											<include>server.xml</include>
+										</includes>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.cloudfoundry</groupId>
+					<artifactId>cf-maven-plugin</artifactId>
+					<version>1.1.3</version>
+					<configuration>
+						<target>${cf.target}</target>
+						<org>${cf.org}</org>
+						<space>${cf.space}</space>
+						<username>${cf.username}</username>
+						<password>${cf.password}</password>
+						<appname>${cf.host}</appname>
+						<memory>256</memory>
+					</configuration>
+					<executions>
+						<execution>
+							<id>push</id>
+							<phase>package</phase>
+							<goals>
+								<goal>push</goal>
+							</goals>
+							<configuration>
+								<path>${project.build.directory}/defaultServer</path>
+                                <env>
+                                    <AUTH_ENDPOINT_URL>https://${cf.org}-jwtsample-liberty-op.mybluemix.net/oidc/endpoint/OP/authorize</AUTH_ENDPOINT_URL>
+                                    <TOKEN_ENDPOINT_URL>https://${cf.org}-jwtsample-liberty-op.mybluemix.net/oidc/endpoint/OP/token</TOKEN_ENDPOINT_URL>
+                                    <RS_JEE_ENDPOINT_URL>https://${cf.org}-jwtsample-liberty-jee-rs.mybluemix.net/signed-jwt-jee-rs-application/Test</RS_JEE_ENDPOINT_URL>
+									<RS_SPRING_ENDPOINT_URL>https://${cf.org}-jwtsample-liberty-spring-rs.mybluemix.net/signed-jwt-spring-rs-application/Test</RS_SPRING_ENDPOINT_URL>
+                                </env>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+			</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>DOCKER</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>2.6</version>
+						<configuration>
+							<failOnMissingWebXml>false</failOnMissingWebXml>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<artifactId>maven-clean-plugin</artifactId>
+						<version>3.0.0</version>
+						<configuration>
+							<filesets>
+								<fileset>
+									<directory>${project.build.directory}</directory>
+									<includes>
+										<include>key.jks</include>
+										<include>truststore.jks</include>
+									</includes>
+									<followSymlinks>false</followSymlinks>
+								</fileset>
+							</filesets>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.7</version>
+						<executions>
+							<execution>
+								<id>copy-keystore</id>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+									<overwrite>true</overwrite>
+									<resources>
+										<resource>
+											<directory>${keystores.build.directory}</directory>
+											<includes>
+												<include>key.jks</include>
+												<include>truststore.jks</include>
+											</includes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>0.20.1</version>
+						<extensions>true</extensions>
+						<configuration>
+							<images>
+								<image>
+									<name>${bluemix.namespace}/liberty-jee-rp:latest</name>
+									<registry>${bluemix.registry}</registry>
+									<build>
+										<from>websphere-liberty:beta</from>
+										<runCmds>
+											<run>/opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer</run>
+										</runCmds>
+										<assembly>
+											<targetDir>/</targetDir>
+											<mode>dir</mode>
+											<inline>
+												<fileSets>
+													<fileSet>
+														<outputDirectory>opt/ibm/wlp/usr/servers/defaultServer</outputDirectory>
+														<directory>${basedir}/src/main/resources</directory>
+													</fileSet>
+													<fileSet>
+														<outputDirectory>opt/ibm/wlp/usr/servers/defaultServer</outputDirectory>
+														<directory>${project.build.directory}</directory>
+														<includes>*.jks</includes>
+													</fileSet>
+												</fileSets>
+												<files>
+													<file>
+														<source>${project.build.directory}/${project.build.finalName}.war</source>
+														<outputDirectory>opt/ibm/wlp/usr/servers/defaultServer/apps</outputDirectory>
+														<destName>signed-jwt-jee-rp-application.war</destName>
+													</file>
+												</files>
+											</inline>
+										</assembly>
+									</build>
+								</image>
+							</images>
+						</configuration>
+						<executions>
+							<execution>
+								<id>build-image</id>
+								<phase>package</phase>
+								<goals>
+									<goal>build</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

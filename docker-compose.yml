@@ -7,7 +7,8 @@ services:
     networks:
      - jwtsample
     environment:
-     - REDIRECT_URL=https://192.168.99.100:9443/oidcclient/redirect/RP 
+     - JEE_REDIRECT_URL=https://192.168.99.100:9443/oidcclient/redirect/RP 
+     - SPRING_REDIRECT_URL=https://192.168.99.100:9444/oidcclient/redirect/RP 
   jeerp:
     image: yourbluemixnamespace/liberty-jee-rp
     ports:

@@ -337,7 +337,7 @@
 													<file>
 														<source>${project.build.directory}/${project.build.finalName}.war</source>
 														<outputDirectory>opt/ibm/wlp/usr/servers/defaultServer/apps</outputDirectory>
-														<destName>signed-jwt-rp-application.war</destName>
+														<destName>signed-jwt-spring-rp-application.war</destName>
 													</file>
 												</files>
 											</inline>

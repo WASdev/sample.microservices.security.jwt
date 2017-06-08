@@ -225,6 +225,7 @@
 							<directory>${project.build.directory}</directory>
 							<includes>
 								<include>key.jks</include>
+								<include>truststore.jks</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>

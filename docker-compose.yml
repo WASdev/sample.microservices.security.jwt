@@ -23,8 +23,8 @@ services:
     environment:
      - AUTH_ENDPOINT_URL=https://192.168.99.100:9445/oidc/endpoint/OP/authorize
      - TOKEN_ENDPOINT_URL=https://op:9443/oidc/endpoint/OP/token
-     - RS_JEE_ENDPOINT_URL=https://jeers:9443/signed-jwt-rs-application/Test
-     - RS_SPRING_ENDPOINT_URL=https://springrs:9443/signed-jwt-rs-application/Test
+     - RS_JEE_ENDPOINT_URL=https://jeers:9443/signed-jwt-jee-rs-application/Test
+     - RS_SPRING_ENDPOINT_URL=https://springrs:9443/signed-jwt-spring-rs-application/Test
   springrp:
     image: yourbluemixnamespace/liberty-spring-rp
     ports:
@@ -39,8 +39,8 @@ services:
     environment:
      - AUTH_ENDPOINT_URL=https://192.168.99.100:9445/oidc/endpoint/OP/authorize
      - TOKEN_ENDPOINT_URL=https://op:9443/oidc/endpoint/OP/token
-     - RS_JEE_ENDPOINT_URL=https://jeers:9443/signed-jwt-rs-application/Test
-     - RS_SPRING_ENDPOINT_URL=https://springrs:9443/signed-jwt-rs-application/Test
+     - RS_JEE_ENDPOINT_URL=https://jeers:9443/signed-jwt-jee-rs-application/Test
+     - RS_SPRING_ENDPOINT_URL=https://springrs:9443/signed-jwt-spring-rs-application/Test
   jeers:
     image: yourbluemixnamespace/liberty-jee-rs
     networks:

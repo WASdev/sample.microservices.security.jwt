@@ -15,7 +15,8 @@ services:
      - "9443:9443"
     links:
      - op
-     - rs
+     - jeers
+     - springrs
     networks:
      - jwtsample
     environment:
@@ -30,7 +31,8 @@ services:
      - "9444:9443"
     links:
      - op
-     - rs
+     - jeers
+     - springrs
     networks:
      - jwtsample
     environment:

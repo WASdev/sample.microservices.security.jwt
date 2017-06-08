@@ -102,8 +102,9 @@ easier, although that step isn't covered in this sample.
 If you do want to follow that route, edit pom.xml and alter "yourBluemixNamespace" to be your Bluemix
 namespace (and also update the registry URL if you are not using US South)
 
-Q: Why do we need `authorizationFormTemplate="https://127.0.0.1:9443/oidc/template.html"` ?
-A: Because Liberty is looking at the url we used in the browser to talk to the OP, and using that to build a url that Liberty uses to talk to itself, to retrieve the default consent form template. Sadly, when running in a container, where we are using 127.0.0.1 on the 
+*Q:* Why do we need `authorizationFormTemplate="https://127.0.0.1:9443/oidc/template.html"` ?
+
+*A:* Because Liberty is looking at the url we used in the browser to talk to the OP, and using that to build a url that Liberty uses to talk to itself, to retrieve the default consent form template. Sadly, when running in a container, where we are using 127.0.0.1 on the 
 host to talk to the container, that means Liberty will try to use 127.0.0.1 to talk to itself. This works IF Liberty is running on the same port _inside_ the container as has been mapped to the container from the host. Sadly, that's not the case for this example. We have Liberty running on port 9443 inside the container, and we've mapped it to 9445 on the host. This results in Liberty trying to talk to 127.0.0.1:9445 inside the container, and it all goes so horribly wrong. Oops. Thankfully, we can tell it where to connect to by adding
 the `authorizationFormTemplate` attribute to the `oautheProvider` element, and it'll all work well. This will never be an issue in production, because you would never be using 127.0.0.1 to access the OP from your browser. #Edgecasesarefun
 

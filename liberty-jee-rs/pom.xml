@@ -73,7 +73,7 @@
 		<!-- <cf.username></cf.username> -->
 		<!-- <cf.password></cf.password> -->
 		<!-- This is the host for your app in Bluemix and what it will be called in the dashboard. -->
-		<cf.host>${cf.org}-jwtsample-liberty-jee-rs</cf.host>
+		<cf.host>${host.prefix}-jwtsample-liberty-jee-rs</cf.host>
 
 	</properties>
 

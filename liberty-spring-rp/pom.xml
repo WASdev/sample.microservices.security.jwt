@@ -85,7 +85,7 @@
 		<!-- <cf.username></cf.username> -->
 		<!-- <cf.password></cf.password> -->
 		<!-- This is the host for your app in Bluemix and what it will be called in the dashboard. -->
-		<cf.host>${cf.org}-jwtsample-liberty-spring-rp</cf.host>
+		<cf.host>${host.prefix}-jwtsample-liberty-spring-rp</cf.host>
 
 	</properties>
 
@@ -229,10 +229,10 @@
 							<configuration>
 								<path>${project.build.directory}/defaultServer</path>
                                 <env>
-                                    <AUTH_ENDPOINT_URL>https://${cf.org}-jwtsample-liberty-op.mybluemix.net/oidc/endpoint/OP/authorize</AUTH_ENDPOINT_URL>
-                                    <TOKEN_ENDPOINT_URL>https://${cf.org}-jwtsample-liberty-op.mybluemix.net/oidc/endpoint/OP/token</TOKEN_ENDPOINT_URL>
-                                    <RS_JEE_ENDPOINT_URL>https://${cf.org}-jwtsample-liberty-jee-rs.mybluemix.net/signed-jwt-jee-rs-application/Test</RS_JEE_ENDPOINT_URL>
-                                    <RS_SPRING_ENDPOINT_URL>https://${cf.org}-jwtsample-liberty-spring-rs.mybluemix.net/signed-jwt-spring-rs-application/Test</RS_SPRING_ENDPOINT_URL>
+                                    <AUTH_ENDPOINT_URL>https://${host.prefix}-jwtsample-liberty-op.mybluemix.net/oidc/endpoint/OP/authorize</AUTH_ENDPOINT_URL>
+                                    <TOKEN_ENDPOINT_URL>https://${host.prefix}-jwtsample-liberty-op.mybluemix.net/oidc/endpoint/OP/token</TOKEN_ENDPOINT_URL>
+                                    <RS_JEE_ENDPOINT_URL>https://${host.prefix}-jwtsample-liberty-jee-rs.mybluemix.net/signed-jwt-jee-rs-application/Test</RS_JEE_ENDPOINT_URL>
+                                    <RS_SPRING_ENDPOINT_URL>https://${host.prefix}-jwtsample-liberty-spring-rs.mybluemix.net/signed-jwt-spring-rs-application/Test</RS_SPRING_ENDPOINT_URL>
                                 </env>
 							</configuration>
 						</execution>

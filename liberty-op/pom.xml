@@ -251,6 +251,7 @@
 									<directory>${keystores.build.directory}</directory>
 									<includes>
 										<include>key.jks</include>
+										<include>truststore.jks</include>
 									</includes>
 								</resource>
 							</resources>

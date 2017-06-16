@@ -15,6 +15,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
             .jee()
-                .mappableRoles("OIDCUser");
+                .mappableAuthorities("OIDCUser");
     }
 }

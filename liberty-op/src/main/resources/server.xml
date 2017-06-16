@@ -43,7 +43,11 @@
           server.xml Here we register the clients that will access the
           provider. For this example, that's just the RP.
       -->
-    <oauthProvider id="Oauth" jwtAccessToken="true">
+    <oauthProvider id="Oauth"
+                   jwtAccessToken="true"
+><!--
+                   authorizationFormTemplate="https://127.0.0.1:9443/oidc/template.html">
+-->
         <localStore>
             <client name="jee-rp"
                 secret="fish"                

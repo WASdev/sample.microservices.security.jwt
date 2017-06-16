@@ -19,47 +19,19 @@
 		location="${server.config.dir}/key.jks" />
 	<keyStore id="defaultTrustStore" password="trust-pass"
 		location="${server.config.dir}/truststore.jks" />
-		
-	<!-- Configure the default keystore to trust the OP -->
-	<ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore"
-		trustStoreRef="defaultTrustStore" serverKeyAlias="jwtsampleapp" />
 
+        <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore"
+             trustStoreRef="defaultTrustStore" serverKeyAlias="jwtsampleapp" />
+		
 	<jwtBuilder id="rsBuilder" 
 				issuer="https://thesamplerp/"
 	  			keyStoreRef="defaultKeyStore"
 	  			keyAlias="jwtsampleapp"
 	/>
 	
-	<jwtConsumer id="oidcConsumer"
-				 signatureAlgorithm="RS256"
-				 issuer="https://thesampleop/"
-				 trustStoreRef="defaultTrustStore"
-				 trustedAlias="jwtsampleapp"
-	/>
-	
 	<jndiEntry jndiName="rsJeeEndpoint" value="${env.RS_JEE_ENDPOINT_URL}"/>
 	<jndiEntry jndiName="rsSpringEndpoint" value="${env.RS_SPRING_ENDPOINT_URL}"/>
 
-	<!-- oidc trust store -->
-	<keyStore id="oidctruststore" password="trust-pass"
-		location="${server.config.dir}/truststore.jks" />
-
-	<authFilter id="jwtapp">
-		<requestUrl id="appurl" urlPattern="/Test" matchType="contains" />
-	</authFilter>
-
-<!-- issuerIdentifier="https://192.168.99.100:9443/oidc/endpoint/OP" -->
-	<openidConnectClient id="RP" 
-		clientId="jee-rp"
-		clientSecret="fish" 
-		signatureAlgorithm="RS256" 
-		trustAliasName="jwtsampleapp"
-		trustStoreRef="oidctruststore" 
-		scope="openid jee-api spring-api jee"
-		authorizationEndpointUrl="${env.AUTH_ENDPOINT_URL}" 
-		tokenEndpointUrl="${env.TOKEN_ENDPOINT_URL}" 
-		issuerIdentifier="https://thesampleop/"
-		/>
 
 	<!-- The app protected by OIDC, the security role enables security for the 
 		app, and by default when is oidc security is configured it applies to all 

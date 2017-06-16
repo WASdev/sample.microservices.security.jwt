@@ -14,11 +14,11 @@ public class GreetingController {
     public String greeting(@AuthenticationPrincipal JwtUserDetails userDetails,
                            @RequestParam(value="name", required=false, defaultValue="World") String name) {
 
-        ArrayList<String> scopes = userDetails.getJwt().getClaims().getClaim("scopes", ArrayList.class);
+        String email = userDetails.getJwt().getClaims().getClaim("email", String.class);
 
         return "Spring RS App invoked with valid JWT "+name+
                 "<br>You authenticated to me as "+userDetails.getUsername()+
-                " and have scopes of "+scopes.toString();
+                " and had an email of "+email;
     }
 
 }

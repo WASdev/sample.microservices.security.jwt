@@ -20,7 +20,9 @@
 	</modules>
 
 	<properties>
-		<bluemix.namespace>yourBlueMixNameSpace</bluemix.namespace>
+		<host.prefix>${cf.org}</host.prefix>
+                <cf.space>dev</cf.space>
+		<bluemix.namespace>yourbluemixnamespace</bluemix.namespace>
 		<bluemix.registry>registry.ng.bluemix.net</bluemix.registry>
 		<keystores.build.directory>${jwtsample.basedir}${file.separator}target</keystores.build.directory>
 	</properties>

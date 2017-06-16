@@ -32,19 +32,6 @@ public class JwtJaxRSClientFilter implements ClientRequestFilter {
 		// ask liberty for the id token from the oauth/oidc exchange protecting
 		// this invocation.
 		IdToken id_token = PropagationHelper.getIdToken();
-				
-		// lets extract the scopes from the access token, we can send them along to the rs.
-		ArrayList<String> scopes=new ArrayList<>();
-		// process the access_token as a jwt to obtain scopes.	
-		try {
-			JwtConsumer jwtConsumer = JwtConsumer.create("oidcConsumer");
-			JwtToken access_Token =  jwtConsumer.createJwt(PropagationHelper.getAccessToken());
-			scopes = access_Token.getClaims().getClaim("scope", ArrayList.class);
-		} catch (InvalidConsumerException | InvalidTokenException e1) {
-			e1.printStackTrace();
-			//e1.printStackTrace(out);
-			throw new WebApplicationException(e1);
-		}
 		
 		// use liberty to build the new jwt, 'rsBuilder' identifies the jwtBuilder 
 		// defined in server.xml which already knows which keystore / key to use
@@ -55,7 +42,7 @@ public class JwtJaxRSClientFilter implements ClientRequestFilter {
 
 			// add the subject, and scopes from the existing request.
 			jwtBuilder.subject(id_token.getSubject());				
-			jwtBuilder.claim("scopes", scopes);
+			jwtBuilder.claim("email", id_token.getClaim("emailAddress"));
 			
 			// set a very short lifespan for the new jwt of 30 seconds.
 			Calendar calendar = Calendar.getInstance();

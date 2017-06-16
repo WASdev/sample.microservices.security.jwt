@@ -37,7 +37,7 @@ public class TestServletUsingFilter extends HttpServlet {
 		out.println("<HR>RS Invocation<p>");
 		// call the RS with the jwt we just built.
 		out.println("Using RS JEE Endpoint of : " + RS_JEE_ENDPOINT + "<br>");
-        out.println("Using RS SPRING Endpoint of : " + RS_SPRING_ENDPOINT + "<br>");
+                out.println("Using RS SPRING Endpoint of : " + RS_SPRING_ENDPOINT + "<br>");
 
 		ClientBuilder cb = ClientBuilder.newBuilder();
 		cb.property("com.ibm.ws.jaxrs.client.disableCNCheck", true);

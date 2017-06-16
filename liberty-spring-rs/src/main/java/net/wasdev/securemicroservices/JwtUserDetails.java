@@ -17,17 +17,6 @@ public class JwtUserDetails implements UserDetails{
 
     public JwtUserDetails(JwtToken jwt){
         this.jwt = jwt;
-
-        //we'll use the scopes claim to init our authorities,
-        //this is not required, but just shows one way to link the jwt
-        //into spring.
-        authorities = new HashSet<>();
-        String scopes = jwt.getClaims().getClaim("scope", String.class);
-        if(scopes!=null && !scopes.isEmpty()){
-            for(String scope : scopes.split(",")){
-                final boolean add = authorities.add(new SimpleGrantedAuthority(scope));
-            }
-        }
     }
 
     public JwtToken getJwt(){

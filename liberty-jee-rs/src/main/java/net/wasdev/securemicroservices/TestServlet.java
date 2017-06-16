@@ -26,7 +26,7 @@ public class TestServlet extends HttpServlet {
 
 		//added by the auth filter after validating the jwt from the rp.
 		JwtToken jwt_Token = (JwtToken) request.getAttribute("jwt");
-		ArrayList<String> scopes = jwt_Token.getClaims().getClaim("scopes", ArrayList.class);
-		out.println("JEE RS JWT Had scopes "+scopes.toString());
+		String email = jwt_Token.getClaims().getClaim("email", String.class);
+		out.println("JEE RS JWT had email "+email);
 	}
 }

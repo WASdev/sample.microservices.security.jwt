@@ -37,6 +37,13 @@ public class TestServletWithoutUsingFilter extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 
+	private void dumpClaim(PrintWriter out, IdToken token, String claimName){
+		String c = token.getClaim(claimName).toString();
+		if(c!=null && !c.isEmpty()){
+			out.println(claimName+" : "+c+"<br>");
+		}
+	}
+
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		PrintWriter out = response.getWriter();
@@ -46,27 +53,20 @@ public class TestServletWithoutUsingFilter extends HttpServlet {
 		// this invocation.
 		IdToken id_token = PropagationHelper.getIdToken();
 		
-		// lets extract the scopes from the access token, we can send them along to the rs.
-		ArrayList<String> scopes=new ArrayList<>();
-		out.println("<HR>Access Token Introspection<p>");
-		out.println("AccessToken Type : "+PropagationHelper.getAccessTokenType()+"<br>");
-		// process the access_token as a jwt to obtain scopes.	
-		try {
-			JwtConsumer jwtConsumer = JwtConsumer.create("oidcConsumer");
-			JwtToken access_Token =  jwtConsumer.createJwt(PropagationHelper.getAccessToken());
-			out.println("AccessToken: "+"<br>");
-			for(Entry<String, Object> e : access_Token.getClaims().entrySet()){
-				out.println(" - "+e.getKey()+" :: "+e.getValue()+"<br>");
-			}
-			scopes = access_Token.getClaims().getClaim("scope", ArrayList.class);
-		} catch (InvalidConsumerException | InvalidTokenException e1) {
-			e1.printStackTrace();
-			e1.printStackTrace(out);
-		}
-		
 		out.println("<HR>ID Token Introspection<p>");
 		out.println("ID Token was : " + id_token + "<br>");
+        out.println("Access Token Type was : "+PropagationHelper.getAccessTokenType()+"<br>");
+        out.println("Access Token was : "+PropagationHelper.getAccessToken()+"<br>");
 		out.println("Building new JWT to call RS with <br>");
+
+		dumpClaim(out,id_token,"sub");
+		dumpClaim(out,id_token,"firstName");
+		dumpClaim(out,id_token,"lastName");
+		dumpClaim(out,id_token,"realmName");
+		dumpClaim(out,id_token,"emailAddress");
+		dumpClaim(out,id_token,"ext");
+
+		out.println("Type of ext ? "+id_token.getClaim("ext").getClass().getName()+"<br>");
 
 		// use liberty to build the new jwt, 'rsBuilder' identifies the jwtBuilder 
 		// defined in server.xml which already knows which keystore / key to use
@@ -77,7 +77,7 @@ public class TestServletWithoutUsingFilter extends HttpServlet {
 
 			// add the subject, and scopes from the existing request.
 			jwtBuilder.subject(id_token.getSubject());				
-			jwtBuilder.claim("scopes", scopes);
+			jwtBuilder.claim("email", id_token.getClaim("emailAddress"));
 
 			// set a very short lifespan for the new jwt of 30 seconds.
 			Calendar calendar = Calendar.getInstance();

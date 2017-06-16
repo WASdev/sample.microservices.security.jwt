@@ -1,5 +1,7 @@
 # Microservices Security Revisited.
 
+NOTE: This is the bluemix-sso branch, it will only run in Bluemix as CF, running locally via docker is possible, but not covered.
+
 This project is the logical successor to the "Signed JWT" parts of [https://github.com/WASdev/sample.microservices.security]
 
 This version shifts the build to maven, uses new Liberty APIs for OIDC and JWT, introduces a Spring version of the RP and RS, 

@@ -1,6 +1,6 @@
-# Microservices Security Revisited.
+# BLUEMIX SSO BRANCH
 
-NOTE: This is the bluemix-sso branch, it will only run in Bluemix as CF, running locally via docker is possible, but not covered.
+**This is the bluemix-sso branch, it will only run in Bluemix as CF, running locally via docker is possible, but not covered.**
 
 This project is the logical successor to the "Signed JWT" parts of [https://github.com/WASdev/sample.microservices.security]
 
